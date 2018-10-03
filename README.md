@@ -1,6 +1,6 @@
 Proficiency
 ===========
-Regression test environment for rasa_nlu. 
+Regression test environment for [rasa_nlu](https://rasa.com/docs/nlu/). 
 
 
 What is it for?
@@ -15,7 +15,8 @@ Developers can
  
 Warning
 -------
-You must be familiar with 
+In order to understand the following instructions you should be familiar with Rasa NLU and its terms. 
+Please take a look at [the docs](https://rasa.com/docs/nlu/) if you feel you're missing something.
 
 
 Setup
@@ -83,9 +84,9 @@ Write a regression test suite in suite.json.
   ]
 }
 ```
-The format of each example is compatible with rasa_nlu responses. this way you can add new examples by simply  
- - updating the sentence
- - copying and pasting intent and entities from the response you received from rasa_nlu
+The format of each example is compatible with rasa_nlu responses. This way you can add new examples by  
+ - filing the sentence attribute, then
+ - copying and pasting intent and entities from the response you received from rasa_nlu service, then
  - possibly removing fields like _confidence_, _extractor_, _processors_. They are not useful in this file.
  
 Launch the test suite
