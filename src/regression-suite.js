@@ -7,6 +7,7 @@ const readFile = util.promisify(fs.readFile);
 class RegressionSuite {
   constructor(projectPath) {
     console.log("projectPath", projectPath);
+console.log('local dir:', __dirname);
     // projectPath = projectPath ?  projectPath : `${__dirname}/sample-project`;
     this.suiteFile = `${projectPath}/suite.json`;
     this.cfg = JSON.parse(fs.readFileSync(`${projectPath}/config.json`));

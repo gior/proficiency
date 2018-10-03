@@ -1,5 +1,5 @@
 {
-  "project": "New bot",
+  "project": "new_bot",
   "endpoints" : {
     "dev": {
       "name": "Dev",
