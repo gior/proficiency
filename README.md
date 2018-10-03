@@ -32,10 +32,6 @@ Create a project folder where you will store
  - _suite.json_: the test suite.
  
 For your convenience the folder `src/sample-project` contains example files that you can copy and customize.
-```
-mkdir 
-```
-
 
 Sample configuration is 
 ```
