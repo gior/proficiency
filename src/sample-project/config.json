@@ -1,0 +1,13 @@
+{
+  "project": "New bot",
+  "endpoints" : {
+    "dev": {
+      "name": "Dev",
+      "url": "http://localhost:5000/parse"
+    },
+    "prod": {
+      "name": "Production",
+      "url": "https://example.com/nlu"
+    }
+  }
+}

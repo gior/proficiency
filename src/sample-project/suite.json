@@ -1,0 +1,29 @@
+{
+  "examples": [
+    {
+      "sentence": "Hi!",
+      "expected": {
+        "intent": {
+          "name": "greetings"
+        },
+        "entities": []
+      }
+    },
+    {
+      "sentence": "Hi Sarah!",
+      "expected": {
+        "intent": {
+          "name": "greetings"
+        },
+        "entities": [
+          {
+            "start": 3,
+            "end": 8,
+            "value": "Sarah",
+            "entity": "name"
+          }
+        ]
+      }
+    }
+  ]
+}

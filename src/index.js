@@ -1,4 +1,8 @@
-//import whatever from 'theLibYouLike'
+const projectPath =  process.argv[2];
+const RegressionSuite = require('./regression-suite');
 
-const js='ES2015+';
-console.log(`${js} scripts are running!`);
+let suite = new RegressionSuite(projectPath)
+suite.run().catch(e => {console.log("RegressionSuite RUN error:", e)})
+
+
+

@@ -26,8 +26,13 @@ Install the library
 
 ```npm install proficiency```
 
-Modify config.json to meet your needs.
-Default configuration is 
+Create a project folder where you will store 
+ - _config.json_: the configuration file, and
+ - _suite.json_: the test suite.
+ 
+For your convenience the folder `src/sample-project` contains example files that you can copy and customize.
+
+Sample configuration is 
 ```
 {
   "project": "New bot",
@@ -43,8 +48,10 @@ Default configuration is
   }
 }
 ```
+_Note_: Be sure to use the same project name you used in Rasa. 
+Otherwise the NLU serivce will be unable to answer. 
 
-Write a regression test suite in suite.json. Use the current file as reference:
+Write a regression test suite in suite.json.
 ```
 {
   "examples": [
@@ -84,12 +91,13 @@ The format of each example is compatible with rasa_nlu responses. this way you c
 Launch the test suite
 ---------------------
 When we hit v 1.0, this will be the launch command:
+```         
+npx proficiency <project path>
 ```
-proficiency <project name>
-```
-or
-```
-proficiency <project path>
+For the time being, you must launch the script explicitly:
+```  
+cd <proficiency folder>       
+node src/index.js <project path>
 ```
 
 Happy testing!
