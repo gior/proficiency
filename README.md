@@ -1,6 +1,6 @@
 Proficiency
 ===========
-Regression test environment for [rasa_nlu](https://rasa.com/docs/nlu/). 
+Regression test tool for [rasa_nlu](https://rasa.com/docs/nlu/). 
 
 
 What is it for?
@@ -32,11 +32,15 @@ Create a project folder where you will store
  - _suite.json_: the test suite.
  
 For your convenience the folder `src/sample-project` contains example files that you can copy and customize.
+```
+mkdir 
+```
+
 
 Sample configuration is 
 ```
 {
-  "project": "New bot",
+  "project": "new_bot",
   "endpoints" : {
     "dev": {
       "name": "Dev",
@@ -44,7 +48,7 @@ Sample configuration is
     },
     "prod": {
       "name": "Production",
-      "url": "https://example.com/nlu"
+      "url": "https://example.com:5000/parse"
     }
   }
 }
@@ -52,7 +56,7 @@ Sample configuration is
 _Note_: Be sure to use the same project name you used in Rasa. 
 Otherwise the NLU serivce will be unable to answer. 
 
-Write a regression test suite in suite.json.
+Write regression tests in suite.json.
 ```
 {
   "examples": [
