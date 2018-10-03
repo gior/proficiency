@@ -6,12 +6,8 @@ const readFile = util.promisify(fs.readFile);
 
 class RegressionSuite {
   constructor(projectPath) {
-    console.log("projectPath", projectPath);
-console.log('local dir:', __dirname);
-    // projectPath = projectPath ?  projectPath : `${__dirname}/sample-project`;
     this.suiteFile = `${projectPath}/suite.json`;
     this.cfg = JSON.parse(fs.readFileSync(`${projectPath}/config.json`));
-    console.log('CFG:', this.cfg);
 
     // TODO: move to config
     this.highConfidence   = .75;
@@ -30,12 +26,10 @@ console.log('local dir:', __dirname);
 
   launchSuite () {
     this.tests.examples.forEach((test, i) => {
-//      console.log(`TEST #${i}`);
-//      console.log(JSON.stringify(test));
       request
         .post({url: this.cfg.endpoints.dev.url, body: { q: test.sentence, project: this.cfg.project }, json: true, timeout: 5000 }, (err, responseHeader, responseBody) => {
           if (err) this.handleRequestError(i, test.sentence, err);
-         // console.log('responseBody:', responseBody);
+         console.log('responseBody:', responseBody);
           let result = {sentence: test.sentence};
           result.intent = this.matchIntent(test, responseBody);
           result.entities = this.matchEntities(test, responseBody);
@@ -54,22 +48,38 @@ console.log('local dir:', __dirname);
     this.recordResult(index, {name: test.sentence, correct: false})
   }
 
-  matchIntent(request, response) {
+  /**
+   * Parses a JSON response looking for the intent expected by the test example
+   * @param {string} testExample - an example from the test suite (suite.js)
+   * @param {string} response - the body of the response provided by the NLU service
+   * @returns {Object} - returns an 'intent match' object with the following structure:
+   * {
+   *   name: string
+   *   correct: boolean
+   *   confidence: number
+   *   message: string,
+   *   best_scoring: optional {
+   *     name: string
+   *     confidence: number
+   *   }
+   * }
+   */
+  matchIntent(testExample, response) {
     let match;
-    if(response.intent.name == request.expected.intent.name) {
+    if(response.intent.name == testExample.expected.intent.name) {
       match = {
-        name: request.expected.intent.name,
+        name: testExample.expected.intent.name,
         correct: true,
         confidence: response.intent.confidence,
         message: 'Ok'
       }
     } else {
       const overlooked = response.intent_ranking.find(function (int) {
-        return int.name == request.expected.intent.name
+        return int.name == testExample.expected.intent.name
       })
       if(!overlooked) {
-        console.log('RESPONSE: ', response)
-        throw(`Intent '${request.expected.intent.name}' was not found. Please check your spelling.`);
+        // console.log('RESPONSE: ', response)
+        throw(`Intent '${testExample.expected.intent.name}' was not found. Please check your spelling.`);
       }
       match = {
         name: overlooked.name,
