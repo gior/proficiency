@@ -29,7 +29,6 @@ class RegressionSuite {
       request
         .post({url: this.cfg.endpoints.dev.url, body: { q: test.sentence, project: this.cfg.project }, json: true, timeout: 5000 }, (err, responseHeader, responseBody) => {
           if (err) this.handleRequestError(i, test.sentence, err);
-         console.log('responseBody:', responseBody);
           let result = {sentence: test.sentence};
           result.intent = this.matchIntent(test, responseBody);
           result.entities = this.matchEntities(test, responseBody);
@@ -49,8 +48,8 @@ class RegressionSuite {
   }
 
   /**
-   * Parses a JSON response looking for the intent expected by the test example
-   * @param {string} testExample - an example from the test suite (suite.js)
+   * Parses the response body looking for the intent expected by the test example
+   * @param {string} testExample - an example from the test suite (suite.json)
    * @param {string} response - the body of the response provided by the NLU service
    * @returns {Object} - returns an 'intent match' object with the following structure:
    * {
@@ -101,8 +100,20 @@ class RegressionSuite {
       return request.expected.entities.map(ent => this.matchEntity(ent, response.entities));
     }
   }
-
-  // Match (or its failure) for an expected entity in a response list.
+  /**
+   * Parses an array of entities looking for the expected one
+   * @param {Object} expected - an expected entity, as defined in suite.json
+   * @param {Array} actualList - Actual entities returned by the NLU service
+   * @returns {Object} - returns an 'entity match' object with the following structure:
+   * {
+   *   entity: string
+   *   found: boolean
+   *   message: string
+   *   value: optional string
+   *   correct: optional boolean
+   *   confidence: optional number
+   * }
+   */
   matchEntity(expected, actualList) {
     let match = actualList.find(function (actual) {
       return actual.entity == expected.entity;
@@ -112,7 +123,6 @@ class RegressionSuite {
       match.correct = match.value == expected.value;
       match.message = match.correct ? 'Ok' : `'${match.value}' found instead of '${expected.value}'`
     } else match = { entity: expected.entity, found: false, message: 'Not found' }
-    // console.log(JSON.stringify(match));
     return match;
   }
 

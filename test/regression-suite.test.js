@@ -51,18 +51,16 @@ const example = {
   }
 }
 
+const suite = new RegressionSuite( __dirname + '/../src/sample-project');
+
 
 describe('RegressionSuite', () => {
-  let suite;
-  before(function () {
-    suite = new RegressionSuite( __dirname + '/../src/sample-project');
-  })
   it('initializes itself with project data', () => {
     expect(suite.cfg.project).to.eql('new_bot');
   })
 
   describe('matchIntent()', () => {
-    it('records a sucessful match', () => {
+    it('records a successful match', () => {
       let match = suite.matchIntent(example, response)
       expect(match.name).to.eql(response.intent.name);
       expect(match.confidence).to.eql(response.intent.confidence);
@@ -82,6 +80,32 @@ describe('RegressionSuite', () => {
       expect(match.best_scoring.name).to.eql(wrongResponse.intent.name);
       expect(match.best_scoring.confidence).to.eql(wrongResponse.intent.confidence);
       expect(match.best_scoring.confidence).to.be.gt(match.confidence);
+    });
+  })
+
+  describe('matchEntity()', () => {
+    const expected = example.expected.entities[0];
+    const actualList = response.entities;
+    const match = suite.matchEntity(expected, actualList);
+
+    it('records a successful match', () => {
+      expect(match.entity).to.eql(expected.entity);
+      expect(match.found).to.be.true;
+      expect(match.confidence).to.be.gt(0);
+      expect(match.correct).to.be.true;
+      expect(match.message).to.eql('Ok');
+    });
+
+    it('records a failed match', () => {
+      let wrongActualList = JSON.parse(JSON.stringify(actualList));
+      wrongActualList.forEach(result => {result.entity = 'unexpectedValue'});
+
+      const match = suite.matchEntity(expected, wrongActualList);
+      expect(match.entity).to.eql(expected.entity);
+      expect(match.found).to.be.false;
+      expect(match.confidence).to.be.undefined;
+      expect(match.correct).to.be.undefined;
+      expect(match.message).not.to.eql('Ok');
     });
   })
 })
