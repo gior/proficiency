@@ -109,6 +109,43 @@ describe('RegressionSuite', () => {
     });
   })
 
+  describe('intentSeverity()', () => {
+    let intentMatch = JSON.parse(JSON.stringify(response.intent));
+
+    it('missed match', () => {
+      intentMatch.name = null;
+      intentMatch.correct = false;
+      expect(suite.intentSeverity(intentMatch)).to.eql(3);
+    });
+
+    it('wrong match', () => {
+      intentMatch.name = 'wrongIntent';
+      intentMatch.correct = false;
+      expect(suite.intentSeverity(intentMatch)).to.eql(3);
+    });
+
+    it('bad match', () => {
+      intentMatch.name = example.expected.intent.name;
+      intentMatch.correct = true;
+      intentMatch.confidence = suite.mediumConfidence / 2;
+      expect(suite.intentSeverity(intentMatch)).to.eql(2);
+    });
+
+    it('average match', () => {
+      intentMatch.name = example.expected.intent.name;
+      intentMatch.correct = true;
+      intentMatch.confidence = (suite.mediumConfidence + suite.highConfidence) / 2;
+      expect(suite.intentSeverity(intentMatch)).to.eql(1);
+    });
+
+    it('good match', () => {
+      intentMatch.name = example.expected.intent.name;
+      intentMatch.correct = true;
+      intentMatch.confidence = (1 + suite.highConfidence) / 2;
+      expect(suite.intentSeverity(intentMatch)).to.eql(0);
+    });
+  })
+
   describe('entitySeverity()', () => {
     let actualList = JSON.parse(JSON.stringify(response.entities));
 

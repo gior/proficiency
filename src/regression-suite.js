@@ -91,6 +91,7 @@ class RegressionSuite {
         message: `'${response.intent.name}' found instead of '${overlooked.name}'`
       }
     }
+    match.severity = this.intentSeverity(match)
     return match;
   }
 
@@ -100,6 +101,7 @@ class RegressionSuite {
       return request.expected.entities.map(ent => this.matchEntity(ent, response.entities));
     }
   }
+
   /**
    * Parses an array of entities looking for the expected one
    * @param {Object} expected - an expected entity, as defined in suite.json
@@ -130,21 +132,39 @@ class RegressionSuite {
     } else match = { entity: expected.entity, found: false, message: 'Not found' }
     if (!match.found || !match.correct) match.expected = expected;
     match.severity = this.entitySeverity(match)
-    console.log(match);
     return match;
   }
 
-
+  /**
+   * Reports concisely an NLU result
+   * @param {Number} index - index of the test case (unused)
+   * @param {Object} result - Result returned by the NLU service
+   * @returns {Object} - returns an 'entity match' object with the following structure:
+   * {
+   *   entity: string
+   *   found: boolean
+   *   message: string
+   *   value: optional string
+   *   correct: optional boolean
+   *   confidence: optional number
+   *   expected: optional {
+   *     entity: string
+   *     value: optional string
+   *     confidence: optional number
+   *   }
+   * }
+   */
   recordResult(index, result) {
-    // Log intent recognition result
     let severity = 0;
-    result.intent.severity = this.logIntent(result);
+    
+    // Log intent recognition result
+    this.logIntent(result);
     severity = Math.max(severity, result.intent.severity);
 
     // Log entity recognition result
     result.entities.forEach(entityResult => {
-      severity = Math.max(severity, entityResult.severity);
       this.logEntity(entityResult);
+      severity = Math.max(severity, entityResult.severity);
     });
 
     if (severity > 0) this.issues.push(result);
@@ -155,6 +175,14 @@ class RegressionSuite {
       console.log(chalk.cyan(`\n\n${this.results.length} tests run`));
       this.logIssues();
     }
+  }
+
+  intentSeverity (intentResult) {
+    if (!intentResult.correct) return 3;
+    if (intentResult.confidence >=  0 && intentResult.confidence < this.mediumConfidence) return 2;
+    if (intentResult.confidence < this.highConfidence) return 1;
+    if (intentResult.confidence >= this.highConfidence) return 0;
+    else throw 'Unable to evaluate match severity';
   }
 
   entitySeverity (entityResult) {
@@ -180,26 +208,16 @@ class RegressionSuite {
     }
   }
 
-  // Extract the intent from a nlu result. It logs and returns its severity.
-  // Returns severity of issues 0: none ... 3: critical
+  // synthetic log of intent recognition in a result.
   logIntent (result) {
     const sign = '#';
-    let severity = result.intent.correct ? this.evaluateConfidence(result.intent.confidence) : 3;
-    this.severityColorLog(sign, severity);
-    return severity;
+    this.severityColorLog(sign, result.intent.severity);
   }
 
   // synthetic log of entity recognition in a result.
   logEntity (entityResult) {
     const sign = '*';
     this.severityColorLog(sign, entityResult.severity);
-  }
-
-  // return the severity of this confidence
-  evaluateConfidence (confidence) {
-    if (confidence >= this.highConfidence) return 0;
-    if (confidence >= this.mediumConfidence) return 1;
-    return 2;
   }
 
   logIssues () {
