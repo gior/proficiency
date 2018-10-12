@@ -108,4 +108,49 @@ describe('RegressionSuite', () => {
       expect(match.message).not.to.eql('Ok');
     });
   })
+
+  describe('entitySeverity()', () => {
+    let actualList = JSON.parse(JSON.stringify(response.entities));
+
+    it('missed match', () => {
+      let result = actualList[0];
+      result.entity = null;
+      result.value = null;
+      result.found = false;
+      result.correct = null;
+      result.confidence = null;
+      expect(suite.entitySeverity(result)).to.eql(3);
+    });
+
+    it('wrong match', () => {
+      let result = actualList[0];
+      result.found = true;
+      result.correct = false;
+      expect(suite.entitySeverity(result)).to.eql(3);
+    });
+
+    it('bad match', () => {
+      let result = actualList[0];
+      result.found = true;
+      result.correct = true;
+      result.confidence = suite.mediumConfidence / 2;
+      expect(suite.entitySeverity(result)).to.eql(2);
+    });
+
+    it('average match', () => {
+      let result = actualList[0];
+      result.found = true;
+      result.correct = true;
+      result.confidence = (suite.mediumConfidence + suite.highConfidence) / 2;
+      expect(suite.entitySeverity(result)).to.eql(1);
+    });
+
+    it('good match', () => {
+      let result = actualList[0];
+      result.found = true;
+      result.correct = true;
+      result.confidence = (1 + suite.highConfidence) / 2;
+      expect(suite.entitySeverity(result)).to.eql(0);
+    });
+  })
 })

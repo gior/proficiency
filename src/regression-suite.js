@@ -112,22 +112,30 @@ class RegressionSuite {
    *   value: optional string
    *   correct: optional boolean
    *   confidence: optional number
+   *   expected: optional {
+   *     entity: string
+   *     value: optional string
+   *     confidence: optional number
+   *   }
    * }
    */
   matchEntity(expected, actualList) {
     let match = actualList.find(function (actual) {
-      return actual.entity == expected.entity;
+      return (actual.entity == expected.entity);
     })
     if (match) {
       match.found = true;
       match.correct = match.value == expected.value;
       match.message = match.correct ? 'Ok' : `'${match.value}' found instead of '${expected.value}'`
     } else match = { entity: expected.entity, found: false, message: 'Not found' }
+    if (!match.found || !match.correct) match.expected = expected;
+    match.severity = this.entitySeverity(match)
+    console.log(match);
     return match;
   }
 
 
-  recordResult(index, result, message) {
+  recordResult(index, result) {
     // Log intent recognition result
     let severity = 0;
     result.intent.severity = this.logIntent(result);
@@ -135,13 +143,11 @@ class RegressionSuite {
 
     // Log entity recognition result
     result.entities.forEach(entityResult => {
-      entityResult.severity = this.logEntity(entityResult);
       severity = Math.max(severity, entityResult.severity);
+      this.logEntity(entityResult);
     });
-    if (severity > 0) {
-      this.issues.push(result);
-    }
 
+    if (severity > 0) this.issues.push(result);
     this.results.push(result);
 
     // After logging the last run, start reporting issue details
@@ -149,6 +155,14 @@ class RegressionSuite {
       console.log(chalk.cyan(`\n\n${this.results.length} tests run`));
       this.logIssues();
     }
+  }
+
+  entitySeverity (entityResult) {
+    if (!entityResult.found || !entityResult.correct) return 3;
+    if (entityResult.confidence >=  0 && entityResult.confidence < this.mediumConfidence) return 2;
+    if (entityResult.confidence < this.highConfidence) return 1;
+    if (entityResult.confidence >= this.highConfidence) return 0;
+    else throw 'Unable to evaluate match severity';
   }
 
   severityColorLog (string, severity) {
@@ -176,13 +190,9 @@ class RegressionSuite {
   }
 
   // synthetic log of entity recognition in a result.
-  // Returns severity of issues 0: none ... 3: critical
   logEntity (entityResult) {
-    // console.log('entityResult:', entityResult);
     const sign = '*';
-    let severity = entityResult.found ? this.evaluateConfidence(entityResult.confidence) : 3;
-    this.severityColorLog(sign, severity);
-    return severity;
+    this.severityColorLog(sign, entityResult.severity);
   }
 
   // return the severity of this confidence
@@ -207,8 +217,10 @@ class RegressionSuite {
       }
       console.log();
       issue.entities.forEach(entity => {
-        this.severityColorLog(`    ${entity.entity}: ${entity.value}   ${String(entity.confidence).substr(0,4)}\n`, entity.severity);
+        const expected = entity.expected ? chalk.gray(`   instead of ${entity.expected.value}\n`) : '\n'
+        this.severityColorLog(`    ${entity.entity}: ${entity.value}   ${String(entity.confidence).substr(0,4)}` + expected, entity.severity);
       })
+      // console.log(issue.entities);
     });
     console.log('');
   }

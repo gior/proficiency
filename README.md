@@ -98,7 +98,7 @@ npx proficiency <project path>
 For the time being, you must launch the script explicitly:
 ```  
 cd <proficiency folder>       
-node src/index.js <project path>
+node src/index.js <regression test folder path>
 ```
 
 Happy testing!
