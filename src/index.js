@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 const projectPath =  process.argv[2];
 const RegressionSuite = require('./regression-suite');
 

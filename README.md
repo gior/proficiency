@@ -93,14 +93,8 @@ The format of each example is compatible with rasa_nlu responses. This way you c
  
 Launch the test suite
 ---------------------
-When we hit v 1.0, this will be the launch command:
 ```         
-npx proficiency <project path>
-```
-For the time being, you must launch the script explicitly:
-```  
-cd <proficiency folder>       
-node src/index.js <regression test folder path>
+npx proficiency <regression test folder path>
 ```
 
 Happy testing!

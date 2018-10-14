@@ -1,6 +1,6 @@
 {
   "name": "proficiency",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Regression test tool for rasa_nlu",
   "keywords": [
     "regression",
@@ -9,11 +9,12 @@
     "utility",
     "reasa_nlu"
   ],
+  "author": "Giorgio Sidari",
   "main": "src/index.js",
   "scripts": {
     "test": "nodemon --watch src --watch test node_modules/mocha/bin/mocha"
   },
-  "author": "Giorgio Sidari",
+  "bin": "src/index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/gior/proficiency.git"
