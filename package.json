@@ -1,14 +1,30 @@
 {
   "name": "proficiency",
-  "version": "0.0.1",
+  "version": "0.0.2-a",
   "description": "Regression test tool for rasa_nlu",
+  "keywords": [
+    "regression",
+    "test",
+    "util",
+    "utility",
+    "reasa_nlu"
+  ],
   "main": "src/index.js",
   "scripts": {
     "test": "nodemon --watch src --watch test node_modules/mocha/bin/mocha"
   },
-  "keywords": [],
-  "author": "",
+  "author": "Giorgio Sidari",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gior/proficiency.git"
+  },
+  "bugs": {
+    "url": "http://github.com/gior/proficiency/issues"
+  },
   "license": "MIT",
+  "engines": {
+    "node": ">= 8"
+  },
   "devDependencies": {
     "@babel/core": "^7.1.0",
     "@babel/preset-env": "^7.1.0",

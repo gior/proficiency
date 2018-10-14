@@ -85,7 +85,7 @@ Write regression tests in suite.json.
 }
 ```
 The format of each example is compatible with rasa_nlu responses. This way you can add new examples by  
- - filing the sentence attribute, then
+ - filling the sentence attribute, then
  - copying and pasting intent and entities from the response you received from rasa_nlu service, then
  - possibly removing fields like _confidence_, _extractor_, _processors_. They are not useful in this file.
  
