@@ -46,7 +46,9 @@ Sample configuration is
       "name": "Production",
       "url": "https://example.com:5000/parse"
     }
-  }
+  },
+  "highConfidence": 0.75,
+  "mediumConfidence": 0.65
 }
 ```
 _Note_: Be sure to use the same project name you used in Rasa. 

@@ -9,5 +9,7 @@
       "name": "Production",
       "url": "https://example.com/nlu"
     }
-  }
+  },
+  "highConfidence": 0.75,
+  "mediumConfidence": 0.65
 }

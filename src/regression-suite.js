@@ -8,11 +8,6 @@ class RegressionSuite {
   constructor(projectPath) {
     this.suiteFile = `${projectPath}/suite.json`;
     this.cfg = JSON.parse(fs.readFileSync(`${projectPath}/config.json`));
-
-    // TODO: move to config
-    this.highConfidence   = .75;
-    this.mediumConfidence = .65;
-
     this.issues = [];
     this.results = [];
     this.tests = [];
@@ -179,17 +174,17 @@ class RegressionSuite {
 
   intentSeverity (intentResult) {
     if (!intentResult.correct) return 3;
-    if (intentResult.confidence >=  0 && intentResult.confidence < this.mediumConfidence) return 2;
-    if (intentResult.confidence < this.highConfidence) return 1;
-    if (intentResult.confidence >= this.highConfidence) return 0;
+    if (intentResult.confidence >=  0 && intentResult.confidence < this.cfg.mediumConfidence) return 2;
+    if (intentResult.confidence < this.cfg.highConfidence) return 1;
+    if (intentResult.confidence >= this.cfg.highConfidence) return 0;
     else throw 'Unable to evaluate match severity';
   }
 
   entitySeverity (entityResult) {
     if (!entityResult.found || !entityResult.correct) return 3;
-    if (entityResult.confidence >=  0 && entityResult.confidence < this.mediumConfidence) return 2;
-    if (entityResult.confidence < this.highConfidence) return 1;
-    if (entityResult.confidence >= this.highConfidence) return 0;
+    if (entityResult.confidence >=  0 && entityResult.confidence < this.cfg.mediumConfidence) return 2;
+    if (entityResult.confidence < this.cfg.highConfidence) return 1;
+    if (entityResult.confidence >= this.cfg.highConfidence) return 0;
     else throw 'Unable to evaluate match severity';
   }
 
