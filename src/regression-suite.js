@@ -24,6 +24,7 @@ class RegressionSuite {
       request
         .post({url: this.cfg.endpoints.dev.url, body: { q: test.sentence, project: this.cfg.project }, json: true, timeout: 5000 }, (err, responseHeader, responseBody) => {
           if (err) this.handleRequestError(i, test.sentence, err);
+          if (i === 0) this.model = responseBody.model;
           let result = {sentence: test.sentence};
           result.intent = this.matchIntent(test, responseBody);
           result.entities = this.matchEntities(test, responseBody);
@@ -167,7 +168,7 @@ class RegressionSuite {
 
     // After logging the last run, start reporting issue details
     if (this.results.length == this.tests.examples.length) {
-      console.log(chalk.cyan(`\n\n${this.results.length} tests run`));
+      console.log(chalk.cyan(`\n\n${this.results.length} tests run on ${this.model}`));
       this.logIssues();
     }
   }
