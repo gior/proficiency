@@ -5,9 +5,11 @@ const fs = require('fs');
 const readFile = util.promisify(fs.readFile);
 
 class RegressionSuite {
-  constructor(projectPath) {
+  constructor(projectPath, options) {
     this.suiteFile = `${projectPath}/suite.json`;
+    this.options = options;
     this.cfg = JSON.parse(fs.readFileSync(`${projectPath}/config.json`));
+    this.endpoint = this.options.production ? this.cfg.endpoints.prod : this.cfg.endpoints.dev;
     this.issues = [];
     this.results = [];
     this.tests = [];
@@ -22,7 +24,7 @@ class RegressionSuite {
   launchSuite () {
     this.tests.examples.forEach((test, i) => {
       request
-        .post({url: this.cfg.endpoints.dev.url, body: { q: test.sentence, project: this.cfg.project }, json: true, timeout: 5000 }, (err, responseHeader, responseBody) => {
+        .post({url: this.endpoint.url, body: { q: test.sentence, project: this.cfg.project }, json: true, timeout: 5000 }, (err, responseHeader, responseBody) => {
           if (err) this.handleRequestError(i, test.sentence, err);
           if (i === 0) this.model = responseBody.model;
           let result = {sentence: test.sentence};
@@ -168,7 +170,7 @@ class RegressionSuite {
 
     // After logging the last run, start reporting issue details
     if (this.results.length == this.tests.examples.length) {
-      console.log(chalk.cyan(`\n\n${this.results.length} tests run on ${this.model}`));
+      console.log(chalk.cyan(`\n\n${this.results.length} tests run on ${this.model} in ${this.endpoint.name}`));
       this.logIssues();
     }
   }

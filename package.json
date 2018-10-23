@@ -1,6 +1,6 @@
 {
   "name": "proficiency",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Regression test tool for rasa_nlu",
   "keywords": [
     "regression",
@@ -38,6 +38,7 @@
   },
   "dependencies": {
     "chalk": "^2.4.1",
+    "commander": "^2.19.0",
     "fs": "0.0.1-security",
     "request": "^2.88.0",
     "util": "^0.11.0"

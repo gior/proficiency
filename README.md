@@ -21,8 +21,6 @@ Please take a look at [the docs](https://rasa.com/docs/nlu/) if you feel you're 
 
 Setup
 ------------
-When we hit v 1.0, this will be the setup process:
-
 Install the library
 
 ```npm install proficiency```
