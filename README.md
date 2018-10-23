@@ -23,7 +23,7 @@ Setup
 ------------
 Install the library
 
-```npm install proficiency```
+```npm install -g proficiency```
 
 Create a project folder where you will store 
  - _config.json_: the configuration file, and
@@ -89,10 +89,22 @@ The format of each example is compatible with rasa_nlu responses. This way you c
  - copying and pasting intent and entities from the response you received from rasa_nlu service, then
  - possibly removing fields like _confidence_, _extractor_, _processors_. They are not useful in this file.
  
+Look at the available options
+-----------------------------
+```
+proficiency -h
+``` 
+ 
 Launch the test suite
 ---------------------
+Using your development endpoint:
 ```         
 npx proficiency <regression test folder path>
 ```
+In production:            
+```         
+npx proficiency <regression test folder path> -p
+```
+
 
 Happy testing!
