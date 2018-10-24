@@ -127,21 +127,21 @@ describe('RegressionSuite', () => {
     it('bad match', () => {
       intentMatch.name = example.expected.intent.name;
       intentMatch.correct = true;
-      intentMatch.confidence = suite.mediumConfidence / 2;
+      intentMatch.confidence = suite.cfg.mediumConfidence / 2;
       expect(suite.intentSeverity(intentMatch)).to.eql(2);
     });
 
     it('average match', () => {
       intentMatch.name = example.expected.intent.name;
       intentMatch.correct = true;
-      intentMatch.confidence = (suite.mediumConfidence + suite.highConfidence) / 2;
+      intentMatch.confidence = (suite.cfg.mediumConfidence + suite.cfg.highConfidence) / 2;
       expect(suite.intentSeverity(intentMatch)).to.eql(1);
     });
 
     it('good match', () => {
       intentMatch.name = example.expected.intent.name;
       intentMatch.correct = true;
-      intentMatch.confidence = (1 + suite.highConfidence) / 2;
+      intentMatch.confidence = (1 + suite.cfg.highConfidence) / 2;
       expect(suite.intentSeverity(intentMatch)).to.eql(0);
     });
   })
@@ -170,7 +170,7 @@ describe('RegressionSuite', () => {
       let result = actualList[0];
       result.found = true;
       result.correct = true;
-      result.confidence = suite.mediumConfidence / 2;
+      result.confidence = suite.cfg.mediumConfidence / 2;
       expect(suite.entitySeverity(result)).to.eql(2);
     });
 
@@ -178,7 +178,7 @@ describe('RegressionSuite', () => {
       let result = actualList[0];
       result.found = true;
       result.correct = true;
-      result.confidence = (suite.mediumConfidence + suite.highConfidence) / 2;
+      result.confidence = (suite.cfg.mediumConfidence + suite.cfg.highConfidence) / 2;
       expect(suite.entitySeverity(result)).to.eql(1);
     });
 
@@ -186,7 +186,7 @@ describe('RegressionSuite', () => {
       let result = actualList[0];
       result.found = true;
       result.correct = true;
-      result.confidence = (1 + suite.highConfidence) / 2;
+      result.confidence = (1 + suite.cfg.highConfidence) / 2;
       expect(suite.entitySeverity(result)).to.eql(0);
     });
   })

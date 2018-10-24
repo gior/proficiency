@@ -42,13 +42,15 @@ Sample configuration is
     },
     "prod": {
       "name": "Production",
-      "url": "https://example.com:5000/parse"
+      "url": "https://example.com:5000/parse",
+      "token": "rasa_nlu_server_token_if_any"
     }
   },
   "highConfidence": 0.75,
   "mediumConfidence": 0.65
 }
 ```
+As you can see, you can specify connection tokens for your endpoints. If null or missing, no token will be sent.
 _Note_: Be sure to use the same project name you used in Rasa. 
 Otherwise the NLU serivce will be unable to answer. 
 

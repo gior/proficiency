@@ -9,7 +9,7 @@ class RegressionSuite {
     this.suiteFile = `${projectPath}/suite.json`;
     this.options = options;
     this.cfg = JSON.parse(fs.readFileSync(`${projectPath}/config.json`));
-    this.endpoint = this.options.production ? this.cfg.endpoints.prod : this.cfg.endpoints.dev;
+    if (this.options) this.endpoint = this.options.production ? this.cfg.endpoints.prod : this.cfg.endpoints.dev;
     this.issues = [];
     this.results = [];
     this.tests = [];
@@ -23,14 +23,20 @@ class RegressionSuite {
 
   launchSuite () {
     this.tests.examples.forEach((test, i) => {
+      let queryString = { q: test.sentence, project: this.cfg.project };
+      if (this.endpoint.token) queryString.token = this.endpoint.token;
+      
       request
-        .post({url: this.endpoint.url, body: { q: test.sentence, project: this.cfg.project }, json: true, timeout: 5000 }, (err, responseHeader, responseBody) => {
+        .get({url: this.endpoint.url, qs: queryString, json: true, timeout: 5000 }, (err, responseHeader, responseBody) => {
           if (err) this.handleRequestError(i, test.sentence, err);
-          if (i === 0) this.model = responseBody.model;
-          let result = {sentence: test.sentence};
-          result.intent = this.matchIntent(test, responseBody);
-          result.entities = this.matchEntities(test, responseBody);
-          this.recordResult(i, result);
+          else if (responseBody == 'unauthorized') console.log("Auth failed. Check your connection token.");
+          else {
+            if (i === 0) this.model = responseBody.model;
+            let result = {sentence: test.sentence};
+            result.intent = this.matchIntent(test, responseBody);
+            result.entities = this.matchEntities(test, responseBody);
+            this.recordResult(i, result);
+          }
         })
     })
   }
@@ -180,7 +186,7 @@ class RegressionSuite {
     if (intentResult.confidence >=  0 && intentResult.confidence < this.cfg.mediumConfidence) return 2;
     if (intentResult.confidence < this.cfg.highConfidence) return 1;
     if (intentResult.confidence >= this.cfg.highConfidence) return 0;
-    else throw 'Unable to evaluate match severity';
+    else throw new Error('Unable to evaluate match severity');
   }
 
   entitySeverity (entityResult) {
@@ -188,7 +194,7 @@ class RegressionSuite {
     if (entityResult.confidence >=  0 && entityResult.confidence < this.cfg.mediumConfidence) return 2;
     if (entityResult.confidence < this.cfg.highConfidence) return 1;
     if (entityResult.confidence >= this.cfg.highConfidence) return 0;
-    else throw 'Unable to evaluate match severity';
+    else throw new Error('Unable to evaluate match severity');
   }
 
   severityColorLog (string, severity) {
