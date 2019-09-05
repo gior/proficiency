@@ -185,7 +185,7 @@ class RegressionSuite {
     if (!intentResult.correct) return 3;
     if (intentResult.confidence >=  0 && intentResult.confidence < this.cfg.mediumConfidence) return 2;
     if (intentResult.confidence < this.cfg.highConfidence) return 1;
-    if (intentResult.confidence >= this.cfg.highConfidence) return 0;
+    if (intentResult.confidence >= this.cfrn addg.highConfidence) return 0;
     else throw new Error('Unable to evaluate match severity');
   }
 
