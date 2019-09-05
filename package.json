@@ -1,6 +1,6 @@
 {
   "name": "proficiency",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Regression test tool for rasa_nlu",
   "keywords": [
     "regression",
